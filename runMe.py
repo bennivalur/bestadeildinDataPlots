@@ -1,13 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
-import urllib.request
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import numpy as np
 import json
 import statistics
 
-#xG,passes,
+#xG,passes,passesCompleted,pos,shots,h_shotsOnTarget
 metric = 'xG'
 
 #Key is team name in .csv
@@ -91,6 +90,36 @@ logo_paths = []
 for i in logoList:
     logo_paths.append(os.getcwd() + '/logos/' + str(i))
 
+#These are the actual corrected values for xG and xGA. Provided by an insider directly from WyScout
+#Uncomment if you want to use those instead
+"""
+x = [
+    26.65,
+    38.69,
+    40.08,
+    26.25,
+    28.58,
+    48.55,
+    36.02,
+    51.9,
+    43.51,
+    39.52,
+    34.04,
+    35.52
+]
+
+y = [
+    41.75,
+    38.26,
+    32.78,
+    45.85,
+    44.21,
+    30.25,
+    
+]"""
+
+for idx, t in enumerate(teams):
+    print(t + ' | xG:' + str(x[idx]*22))
 
 fig, ax = plt.subplots()
 
@@ -116,20 +145,18 @@ ax.set_axisbelow(True)
 ax.set_title('Data provided by @bestadeildin as of ' + games[-1]['Leikdagur'], fontsize=7)
 plt.suptitle('Bestadeildin 2022 ' + metric + ' Vs. ' + metric  + 'Against', fontsize=18)
 plt.figtext(.66, .02, 'Data: @bestadeildin | Graph: @bennivaluR_', fontsize=7)
-#plt.plot(np.unique(x), np.poly1d(np.polyfit(x, y, 1))(np.unique(x)), 
-#        color='darkorange', linestyle='--')
+
 plt.plot([statistics.mean(x),statistics.mean(x)],[max(y),min(y)], 
         color='darkorange', linestyle='--')
 plt.plot([max(x),min(x)],[statistics.mean(y),statistics.mean(y)], 
         color='darkorange', linestyle='--')
 
 #Create directory if it does not exist
-"""
 try: 
     os.makedirs('graphs')
 except OSError:
     if not os.path.isdir('graphs'):
         raise
-"""
+
 #Save the figure as a png
 plt.savefig('graphs/besta' + metric + 'vs' + metric + 'A.png', dpi=400)
